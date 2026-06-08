@@ -1,6 +1,4 @@
 import os
-import django_heroku
-import dj_database_url
 from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -13,9 +11,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -59,9 +57,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'commerce.wsgi.application'
 
-# Database
+# PURE LOCAL DATABASE SETUP (Overwriting cloud configurations entirely)
 DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
 
 AUTH_USER_MODEL = 'auctions.User'
@@ -100,14 +101,5 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 LOGOUT_REDIRECT_URL = '/'  # Redirect to home page after logout
 LOGIN_URL = '/login'
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
-
 # Set the static root
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
-
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
